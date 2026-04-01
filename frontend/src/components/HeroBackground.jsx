@@ -235,7 +235,7 @@ export default function HeroBackground() {
     let hoverReturnTimer = null
     let isHovering = false
     const DAMP        = 0.94   // gentle deceleration — particles coast further
-    const RETURN_LERP = 0.0015  // slow motion reform
+    const RETURN_LERP = 0.0001  // very slow reform
 
     const triggerHoverScatter = () => {
       if (mode === 'scroll-out') return
@@ -248,7 +248,10 @@ export default function HeroBackground() {
       }
       // Wait 1s then drift back in slow motion
       hoverReturnTimer = setTimeout(() => {
-        if (mode === 'hover-out') mode = 'hover-return'
+        if (mode === 'hover-out') {
+          mode = 'hover-return'
+          for (let i = 0; i < N; i++) { velX[i] = 0; velY[i] = 0; velZ[i] = 0 }
+        }
         hoverReturnTimer = null
       }, 1000)
     }
@@ -262,7 +265,7 @@ export default function HeroBackground() {
 
     const animate = () => {
       frameId = requestAnimationFrame(animate)
-      t += 0.016
+      t += 0.004
 
       const raw  = clamp01(window.scrollY / (window.innerHeight * 0.6))
       const prog = easeInOut(raw)
@@ -278,18 +281,19 @@ export default function HeroBackground() {
         }
       } else if (prog <= 0.01 && mode === 'scroll-out') {
         mode = 'hover-return'
+        for (let i = 0; i < N; i++) { velX[i] = 0; velY[i] = 0; velZ[i] = 0 }
       }
 
       // ── Paw particles ──
       // Keep rotating in all modes — speed up slightly during scatter for drama
-      const rotSpeed = (mode === 'hover-out' || mode === 'scroll-out') ? 0.0025 : 0.0008
-      yRot += rotSpeed * (1 - prog * 0.5)
+      const rotSpeed = 0.0000003
+      yRot += rotSpeed
       pawGroup.rotation.y = yRot
       // Gentle z tilt during dispersion only
       pawGroup.rotation.z = (mode === 'hover-out' || mode === 'scroll-out')
-        ? Math.sin(t * 0.3) * 0.04
+        ? Math.sin(t * 0.1) * 0.02
         : 0
-      pawGroup.position.y = Math.sin(t * 0.8) * 0.18
+      pawGroup.position.y = Math.sin(t * 0.25) * 0.15
 
       const posAttr = pawGeo.attributes.position
       for (let i = 0; i < N; i++) {
@@ -309,9 +313,9 @@ export default function HeroBackground() {
             if (dx*dx + dy*dy < 0.00001) mode = 'idle'
           }
         } else {
-          liveX[i] += (homeX[i] - liveX[i]) * 0.05
-          liveY[i] += (homeY[i] + Math.sin(t + phase[i]) * 0.03 - liveY[i]) * 0.05
-          liveZ[i] += (0 - liveZ[i]) * 0.05
+          liveX[i] += (homeX[i] - liveX[i]) * 0.008
+          liveY[i] += (homeY[i] + Math.sin(t + phase[i]) * 0.03 - liveY[i]) * 0.008
+          liveZ[i] += (0 - liveZ[i]) * 0.008
         }
         posAttr.setXYZ(i, liveX[i], liveY[i], liveZ[i])
       }

@@ -556,7 +556,7 @@ body:has(.landing-dark) {
   font-family: 'Bebas Neue', cursive;
   font-size: 1.1rem;
   letter-spacing: 0.2em;
-  color: var(--primary);
+  color: #ffffff;
   white-space: nowrap;
   padding: 0 3rem;
 }
