@@ -33,6 +33,9 @@ export default function ShelterDashboard() {
   const [saveError, setSaveError]       = useState('')
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [deleting, setDeleting]           = useState(false)
+  const [editPhotoFile, setEditPhotoFile]     = useState(null)
+  const [editPhotoPreview, setEditPhotoPreview] = useState('')
+  const editPhotoRef                          = useRef(null)
 
   // Add Animal modal state
   const [addOpen, setAddOpen]           = useState(false)
@@ -55,6 +58,8 @@ export default function ShelterDashboard() {
     setEditing(false)
     setSaveError('')
     setConfirmDelete(false)
+    setEditPhotoFile(null)
+    setEditPhotoPreview('')
   }, [])
 
   const handleDelete = async () => {
@@ -83,6 +88,8 @@ export default function ShelterDashboard() {
     setEditStory(modalAnimal.story || '')
     setEditTraits((modalAnimal.traits || []).join(', '))
     setEditStatus(modalAnimal.status || 'available')
+    setEditPhotoFile(null)
+    setEditPhotoPreview('')
     setEditing(true)
     setSaveError('')
   }
@@ -91,15 +98,30 @@ export default function ShelterDashboard() {
     setSaving(true)
     setSaveError('')
     try {
+      let image_url
+      if (editPhotoFile) {
+        const fd = new FormData()
+        fd.append('file', editPhotoFile)
+        const token = localStorage.getItem('token')
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/upload/`,
+          { method: 'POST', headers: { Authorization: `Bearer ${token}` }, body: fd }
+        )
+        if (!res.ok) throw new Error('Image upload failed')
+        const json = await res.json()
+        image_url = `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}${json.url}`
+      }
+
       const traits = editTraits.split(',').map(t => t.trim()).filter(Boolean)
-      const { data } = await api.patch(`/animals/${modalAnimal.id}/profile`, {
-        story: editStory,
-        traits,
-        status: editStatus,
-      })
+      const payload = { story: editStory, traits, status: editStatus }
+      if (image_url) payload.image_url = image_url
+
+      const { data } = await api.patch(`/animals/${modalAnimal.id}/profile`, payload)
       setAnimals(prev => prev.map(a => a.id === data.id ? data : a))
       setModalAnimal(data)
       setEditing(false)
+      setEditPhotoFile(null)
+      setEditPhotoPreview('')
     } catch (err) {
       setSaveError(err.message)
     } finally {
@@ -611,10 +633,36 @@ export default function ShelterDashboard() {
             </div>
 
             <div className="sd-modal-photo">
-              <img src={modalAnimal.image_url} alt={modalAnimal.name} />
+              <img
+                src={editPhotoPreview || modalAnimal.image_url}
+                alt={modalAnimal.name}
+              />
               <span className={`ac-badge ac-badge-${modalAnimal.status} sd-modal-badge`}>
                 {modalAnimal.status}
               </span>
+              {editing && (
+                <>
+                  <button
+                    className="sd-modal-photo-change"
+                    onClick={() => editPhotoRef.current?.click()}
+                    type="button"
+                  >
+                    CHANGE PHOTO
+                  </button>
+                  <input
+                    ref={editPhotoRef}
+                    type="file"
+                    accept="image/*"
+                    style={{ display: 'none' }}
+                    onChange={(e) => {
+                      const file = e.target.files[0]
+                      if (!file) return
+                      setEditPhotoFile(file)
+                      setEditPhotoPreview(URL.createObjectURL(file))
+                    }}
+                  />
+                </>
+              )}
             </div>
 
             <div className="sd-modal-body">

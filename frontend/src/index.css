@@ -1571,6 +1571,24 @@ body:has(.landing-dark) {
   object-position: center 30%;
   display: block;
 }
+.sd-modal-photo-change {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.6);
+  border: none;
+  border-top: 1px solid rgba(255, 215, 0, 0.4);
+  color: #FFD700;
+  font-family: 'Bebas Neue', cursive;
+  font-size: 0.85rem;
+  letter-spacing: 0.16em;
+  padding: 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+  width: 100%;
+}
+.sd-modal-photo-change:hover { background: rgba(0, 0, 0, 0.85); }
 .sd-modal-badge {
   position: absolute;
   top: 12px;

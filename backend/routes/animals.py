@@ -99,7 +99,7 @@ async def update_profile(
     except Exception:
         raise HTTPException(status_code=400, detail="Invalid animal ID")
 
-    allowed = {"story", "traits", "status"}
+    allowed = {"story", "traits", "status", "image_url"}
     updates = {k: v for k, v in payload.items() if k in allowed}
     if "status" in updates and updates["status"] not in ("available", "adopted", "fostered"):
         raise HTTPException(status_code=400, detail="Invalid status value")
