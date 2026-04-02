@@ -99,8 +99,10 @@ async def update_profile(
     except Exception:
         raise HTTPException(status_code=400, detail="Invalid animal ID")
 
-    allowed = {"story", "traits"}
+    allowed = {"story", "traits", "status"}
     updates = {k: v for k, v in payload.items() if k in allowed}
+    if "status" in updates and updates["status"] not in ("available", "adopted", "fostered"):
+        raise HTTPException(status_code=400, detail="Invalid status value")
     if not updates:
         raise HTTPException(status_code=400, detail="No valid fields to update")
 
@@ -110,3 +112,15 @@ async def update_profile(
 
     updated = await db.animals.find_one({"_id": oid})
     return serialize(updated)
+
+
+@router.delete("/{animal_id}", status_code=204)
+async def delete_animal(animal_id: str, _user=Depends(get_current_user)):
+    try:
+        oid = ObjectId(animal_id)
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid animal ID")
+
+    result = await db.animals.delete_one({"_id": oid})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Animal not found")

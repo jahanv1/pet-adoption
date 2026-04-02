@@ -1290,7 +1290,7 @@ body:has(.landing-dark) {
 }
 .sd-vacc-row {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 32px;
   padding: 14px 20px;
   border-bottom: 1px solid var(--border-subtle);
   font-size: 0.85rem;
@@ -1308,8 +1308,134 @@ body:has(.landing-dark) {
 }
 .sd-vacc-name { color: var(--text); font-weight: 700; }
 
+/* ── Health panel topbar ── */
+.sd-health-panel-topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+.sd-health-panel-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+/* ── Health edit inputs ── */
+.sd-health-input {
+  width: 100%;
+  background: var(--bg);
+  border: none;
+  border-bottom: 1px solid #FFD700;
+  color: var(--text);
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1.3rem;
+  letter-spacing: 0.04em;
+  padding: 4px 2px;
+  outline: none;
+  box-sizing: border-box;
+}
+.sd-health-input::placeholder { color: var(--text-ghost); font-size: 1rem; }
+.sd-health-input[type="date"] { font-family: 'Nunito', sans-serif; font-size: 0.9rem; font-weight: 600; }
+
+/* ── Vaccination edit row ── */
+.sd-vacc-edit-row { grid-template-columns: 1fr 1fr 1fr 32px; }
+.sd-vacc-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 4px 2px;
+  outline: none;
+  box-sizing: border-box;
+}
+.sd-vacc-input:focus { border-bottom-color: #FFD700; }
+.sd-vacc-del {
+  background: none;
+  border: none;
+  color: #f87171;
+  font-family: 'Bebas Neue', cursive;
+  font-size: 0.75rem;
+  cursor: pointer;
+  padding: 0;
+  letter-spacing: 0.05em;
+}
+.sd-vacc-del:hover { color: #fff; }
+
 /* ── Card clickable ── */
 .sd-card-clickable { cursor: pointer; }
+
+/* ── Add Animal button ── */
+.sd-add-btn {
+  margin-left: auto;
+  background: none;
+  border: 1px solid #FFD700;
+  color: #FFD700;
+  font-family: 'Bebas Neue', cursive;
+  font-size: 0.85rem;
+  letter-spacing: 0.14em;
+  padding: 6px 18px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+.sd-add-btn:hover { background: #FFD700; color: #000; }
+
+/* ── Add Animal modal ── */
+.sd-add-modal { max-width: 720px; }
+.sd-add-modal-title {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1.1rem;
+  letter-spacing: 0.16em;
+  color: #FFD700;
+}
+.sd-add-form { padding: 28px 32px 32px; display: flex; flex-direction: column; gap: 20px; }
+.sd-add-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.sd-add-field { display: flex; flex-direction: column; gap: 8px; }
+.sd-add-label {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--text-ghost);
+  text-transform: uppercase;
+}
+.sd-add-actions { display: flex; gap: 12px; padding-top: 8px; }
+
+/* Photo upload */
+.sd-photo-upload {
+  height: 160px;
+  border: 1px dashed var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color 0.15s;
+  background: var(--bg);
+}
+.sd-photo-upload:hover { border-color: #FFD700; }
+.sd-photo-placeholder {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 0.85rem;
+  letter-spacing: 0.14em;
+  color: var(--text-ghost);
+}
+.sd-photo-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  display: block;
+}
 
 /* ── Animal Detail Modal ── */
 .sd-modal-overlay {
@@ -1379,6 +1505,17 @@ body:has(.landing-dark) {
 .sd-modal-save:hover:not(:disabled) { background: #4ade80; color: #000; }
 .sd-modal-cancel { color: var(--text-dim); border-color: var(--border); }
 .sd-modal-cancel:hover:not(:disabled) { color: var(--text); border-color: var(--text-dim); }
+.sd-modal-delete { color: #f87171; border-color: #f87171; }
+.sd-modal-delete:hover { background: #f87171; color: #000; }
+.sd-modal-delete-confirm { color: #f87171; border-color: #f87171; }
+.sd-modal-delete-confirm:hover:not(:disabled) { background: #f87171; color: #000; }
+.sd-delete-confirm-text {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 0.85rem;
+  letter-spacing: 0.14em;
+  color: #f87171;
+  margin-right: 4px;
+}
 
 /* Edit inputs */
 .sd-edit-input {
