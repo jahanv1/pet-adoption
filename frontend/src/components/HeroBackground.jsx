@@ -191,18 +191,21 @@ export default function HeroBackground() {
     const shapePts = buildPawPoints()
     const N = shapePts.length
 
-    const homeX = new Float32Array(N)
-    const homeY = new Float32Array(N)
-    const liveX = new Float32Array(N)
-    const liveY = new Float32Array(N)
-    const liveZ = new Float32Array(N)
-    const phase = new Float32Array(N)
-    const velX  = new Float32Array(N)
-    const velY  = new Float32Array(N)
-    const velZ  = new Float32Array(N)
-    const dirX  = new Float32Array(N)
-    const dirY  = new Float32Array(N)
-    const dirZ  = new Float32Array(N)
+    const homeX    = new Float32Array(N)
+    const homeY    = new Float32Array(N)
+    const liveX    = new Float32Array(N)
+    const liveY    = new Float32Array(N)
+    const liveZ    = new Float32Array(N)
+    const phase    = new Float32Array(N)
+    const velX     = new Float32Array(N)
+    const velY     = new Float32Array(N)
+    const velZ     = new Float32Array(N)
+    const dirX     = new Float32Array(N)
+    const dirY     = new Float32Array(N)
+    const dirZ     = new Float32Array(N)
+    const scatterX = new Float32Array(N)
+    const scatterY = new Float32Array(N)
+    const scatterZ = new Float32Array(N)
 
     for (let i = 0; i < N; i++) {
       const [x, y] = shapePts[i]
@@ -216,6 +219,11 @@ export default function HeroBackground() {
       dirX[i] = Math.cos(angle) * r
       dirY[i] = Math.sin(angle) * r
       dirZ[i] = Math.sin(zAngle)
+      // pre-bake scatter destinations (far out)
+      const dist = 6.0 * (0.7 + Math.random() * 0.6)
+      scatterX[i] = x + dirX[i] * dist
+      scatterY[i] = y + dirY[i] * dist
+      scatterZ[i] = dirZ[i] * dist
     }
 
     const pawPositions = new Float32Array(N * 3)
@@ -265,19 +273,16 @@ export default function HeroBackground() {
 
     const animate = () => {
       frameId = requestAnimationFrame(animate)
-      t += 0.004
+      t += 0.016
 
-      const raw  = clamp01(window.scrollY / (window.innerHeight * 0.6))
+      const raw  = clamp01(window.scrollY / (window.innerHeight * 1.5))
       const prog = easeInOut(raw)
 
       // ── Paw scatter transitions ──
-      if (prog > 0.01 && mode !== 'scroll-out') {
-        mode = 'scroll-out'
-        if (hoverReturnTimer) { clearTimeout(hoverReturnTimer); hoverReturnTimer = null }
-        for (let i = 0; i < N; i++) {
-          velX[i] = dirX[i] * 6.0 * (0.7 + Math.random() * 0.6)
-          velY[i] = dirY[i] * 6.0 * (0.7 + Math.random() * 0.6)
-          velZ[i] = dirZ[i] * 6.0 * (0.7 + Math.random() * 0.6)
+      if (prog > 0.01) {
+        if (mode !== 'scroll-out') {
+          mode = 'scroll-out'
+          if (hoverReturnTimer) { clearTimeout(hoverReturnTimer); hoverReturnTimer = null }
         }
       } else if (prog <= 0.01 && mode === 'scroll-out') {
         mode = 'hover-return'
@@ -286,7 +291,7 @@ export default function HeroBackground() {
 
       // ── Paw particles ──
       // Keep rotating in all modes — speed up slightly during scatter for drama
-      const rotSpeed = 0.0000003
+      const rotSpeed = 0.0001
       yRot += rotSpeed
       pawGroup.rotation.y = yRot
       // Gentle z tilt during dispersion only
@@ -297,7 +302,12 @@ export default function HeroBackground() {
 
       const posAttr = pawGeo.attributes.position
       for (let i = 0; i < N; i++) {
-        if (mode === 'hover-out' || mode === 'scroll-out') {
+        if (mode === 'scroll-out') {
+          // Directly interpolate between home and scatter based on scroll progress
+          liveX[i] = homeX[i] + (scatterX[i] - homeX[i]) * prog
+          liveY[i] = homeY[i] + (scatterY[i] - homeY[i]) * prog
+          liveZ[i] = (scatterZ[i]) * prog
+        } else if (mode === 'hover-out') {
           liveX[i] += velX[i] * 0.016
           liveY[i] += velY[i] * 0.016
           liveZ[i] += velZ[i] * 0.016
@@ -313,9 +323,9 @@ export default function HeroBackground() {
             if (dx*dx + dy*dy < 0.00001) mode = 'idle'
           }
         } else {
-          liveX[i] += (homeX[i] - liveX[i]) * 0.008
-          liveY[i] += (homeY[i] + Math.sin(t + phase[i]) * 0.03 - liveY[i]) * 0.008
-          liveZ[i] += (0 - liveZ[i]) * 0.008
+          liveX[i] += (homeX[i] - liveX[i]) * 0.05
+          liveY[i] += (homeY[i] + Math.sin(t + phase[i]) * 0.03 - liveY[i]) * 0.05
+          liveZ[i] += (0 - liveZ[i]) * 0.05
         }
         posAttr.setXYZ(i, liveX[i], liveY[i], liveZ[i])
       }

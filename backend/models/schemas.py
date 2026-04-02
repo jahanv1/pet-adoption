@@ -45,6 +45,8 @@ class AnimalCreate(BaseModel):
     image_emoji: Optional[str] = "🐾"
     image_url: Optional[str] = None
     description: Optional[str] = ""
+    story: Optional[str] = ""
+    traits: Optional[list] = []
 
 
 # --- Medical Details ---

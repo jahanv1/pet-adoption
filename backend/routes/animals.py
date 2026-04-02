@@ -23,6 +23,8 @@ def serialize(animal: dict) -> dict:
         "image_emoji": animal.get("image_emoji", "🐾"),
         "image_url": animal.get("image_url"),
         "description": animal.get("description", ""),
+        "story": animal.get("story", ""),
+        "traits": animal.get("traits", []),
     }
 
 
@@ -84,3 +86,27 @@ async def update_status(
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Animal not found")
     return {"message": "Status updated"}
+
+
+@router.patch("/{animal_id}/profile")
+async def update_profile(
+    animal_id: str,
+    payload: dict,
+    _user=Depends(get_current_user),
+):
+    try:
+        oid = ObjectId(animal_id)
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid animal ID")
+
+    allowed = {"story", "traits"}
+    updates = {k: v for k, v in payload.items() if k in allowed}
+    if not updates:
+        raise HTTPException(status_code=400, detail="No valid fields to update")
+
+    result = await db.animals.update_one({"_id": oid}, {"$set": updates})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Animal not found")
+
+    updated = await db.animals.find_one({"_id": oid})
+    return serialize(updated)

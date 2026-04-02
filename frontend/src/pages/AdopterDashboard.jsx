@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import Navbar from '../components/Navbar'
 import AnimalCard from '../components/AnimalCard'
 import DashboardBackground from '../components/DashboardBackground'
@@ -19,16 +19,22 @@ export default function AdopterDashboard() {
   const [error,   setError]   = useState('')
   const [filter,  setFilter]  = useState('All')
   const [search,  setSearch]  = useState('')
+  const [modalAnimal, setModalAnimal] = useState(null)
 
   useEffect(() => {
     api.get('/animals/?status=available')
-      .then(({ data }) => {
-        console.log('[AdopterDashboard] sample animal:', data[0])
-        setAnimals(data)
-      })
+      .then(({ data }) => setAnimals(data))
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false))
   }, [])
+
+  const closeModal = useCallback(() => setModalAnimal(null), [])
+
+  useEffect(() => {
+    const handler = (e) => { if (e.key === 'Escape') closeModal() }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [closeModal])
 
   const displayed = animals.filter((a) => {
     const matchSpecies = filter === 'All' || a.species === filter
@@ -111,7 +117,9 @@ export default function AdopterDashboard() {
         {!loading && displayed.length > 0 && (
           <div className="animals-grid">
             {displayed.map((animal) => (
-              <AnimalCard key={animal.id} animal={animal} />
+              <div key={animal.id} className="sd-card-clickable" onClick={() => setModalAnimal(animal)}>
+                <AnimalCard animal={animal} />
+              </div>
             ))}
           </div>
         )}
@@ -121,6 +129,74 @@ export default function AdopterDashboard() {
         <div className="adopt-cta">
           <h3>Ready to adopt?</h3>
           <p>Contact your local shelter to start the adoption process. Every adoption saves a life.</p>
+        </div>
+      )}
+
+      {/* ── Animal Detail Modal (read-only) ── */}
+      {modalAnimal && (
+        <div className="sd-modal-overlay" onClick={closeModal}>
+          <div className="sd-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="sd-modal-topbar">
+              <button className="sd-modal-close" onClick={closeModal}>CLOSE</button>
+            </div>
+
+            <div className="sd-modal-photo">
+              <img src={modalAnimal.image_url} alt={modalAnimal.name} />
+              <span className={`ac-badge ac-badge-${modalAnimal.status} sd-modal-badge`}>
+                {modalAnimal.status}
+              </span>
+            </div>
+
+            <div className="sd-modal-body">
+              <div className="sd-modal-header">
+                <h2 className="sd-modal-name">{modalAnimal.name}</h2>
+                <span className="sd-modal-gender">{modalAnimal.gender === 'Male' ? 'M' : 'F'}</span>
+              </div>
+
+              <div className="sd-modal-meta-row">
+                <div className="sd-modal-meta-item">
+                  <span className="sd-modal-meta-label">SPECIES</span>
+                  <span className="sd-modal-meta-val">{modalAnimal.species}</span>
+                </div>
+                <div className="sd-modal-meta-item">
+                  <span className="sd-modal-meta-label">BREED</span>
+                  <span className="sd-modal-meta-val">{modalAnimal.breed}</span>
+                </div>
+                <div className="sd-modal-meta-item">
+                  <span className="sd-modal-meta-label">AGE</span>
+                  <span className="sd-modal-meta-val">{modalAnimal.age} {modalAnimal.age === 1 ? 'yr' : 'yrs'}</span>
+                </div>
+                <div className="sd-modal-meta-item">
+                  <span className="sd-modal-meta-label">GENDER</span>
+                  <span className="sd-modal-meta-val">{modalAnimal.gender}</span>
+                </div>
+                {modalAnimal.dob && (
+                  <div className="sd-modal-meta-item">
+                    <span className="sd-modal-meta-label">DATE ADMITTED</span>
+                    <span className="sd-modal-meta-val">{modalAnimal.dob}</span>
+                  </div>
+                )}
+              </div>
+
+              {modalAnimal.traits && modalAnimal.traits.length > 0 && (
+                <div className="sd-modal-section">
+                  <div className="sd-modal-section-label">PERSONALITY</div>
+                  <div className="sd-modal-traits">
+                    {modalAnimal.traits.map((t) => (
+                      <span key={t} className="sd-modal-trait">{t}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {modalAnimal.story && (
+                <div className="sd-modal-section">
+                  <div className="sd-modal-section-label">THEIR STORY</div>
+                  <p className="sd-modal-story">{modalAnimal.story}</p>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </div>
