@@ -518,7 +518,7 @@ input, select, textarea { font-family: inherit; }
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  overflow-x: hidden;
+  overflow-x: clip;
   position: relative;
   z-index: 1;
 }
@@ -597,7 +597,7 @@ body:has(.landing-dark) {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  overflow: visible;
+  overflow: hidden;
   background: transparent;
   position: relative;
   z-index: 1;
@@ -609,12 +609,11 @@ body:has(.landing-dark) {
   display: flex;
   align-items: flex-end;
   padding: 80px 40px 28px;
-  overflow: visible;
+  overflow: hidden;
   position: relative;
   z-index: 1;
 }
 .hero-content {
-  will-change: transform;
   position: relative;
   z-index: 1;
   width: 100%;
@@ -677,14 +676,23 @@ body:has(.landing-dark) {
 
 /* Portals section */
 .dark-portals {
-  background: rgba(0,0,0,0.35);
+  position: relative;
+  z-index: 2;
+  background: var(--bg);
   padding: 72px 40px 64px;
   display: flex;
   flex-direction: column;
   gap: 40px;
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.dark-portals.portals-in {
+  opacity: 1;
+  transform: translateY(0);
 }
 .portals-label {
-  will-change: transform;
   font-family: 'Nunito', sans-serif;
   font-size: 0.68rem;
   font-weight: 800;
@@ -730,7 +738,6 @@ body:has(.landing-dark) {
 
 /* Card number — top left, huge translucent */
 .card-num {
-  will-change: transform;
   font-family: 'Bebas Neue', cursive;
   font-size: clamp(4.5rem, 9vw, 8rem);
   line-height: 1;
@@ -747,7 +754,6 @@ body:has(.landing-dark) {
   gap: 12px;
 }
 .dark-card-title {
-  will-change: transform;
   font-family: 'Bebas Neue', cursive;
   font-size: clamp(2.4rem, 4vw, 3.6rem);
   letter-spacing: 0.04em;
@@ -807,7 +813,6 @@ body:has(.landing-dark) {
 .dark-stat:last-child { border-right: none; }
 .dark-stat:hover { background: var(--hover-overlay); }
 .dark-stat-val {
-  will-change: transform;
   font-family: 'Bebas Neue', cursive;
   font-size: clamp(4rem, 7vw, 7.5rem);
   letter-spacing: 0.02em;
@@ -823,6 +828,59 @@ body:has(.landing-dark) {
   text-transform: uppercase;
   margin-top: 10px;
   display: block;
+}
+
+/* ── Sticky scroll story ── */
+.dark-story-scroll {
+  height: 380vh;
+  flex: none;
+  position: relative;
+}
+.dark-story-sticky {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 clamp(24px, 10vw, 160px);
+  gap: 0;
+  background: transparent;
+  z-index: 5;
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.story-chunk {
+  display: block;
+  font-family: 'Bebas Neue', cursive;
+  font-size: clamp(1.6rem, 4.4vw, 4rem);
+  line-height: 1.08;
+  letter-spacing: 0.02em;
+  color: var(--text);
+  text-shadow: 0 2px 24px rgba(0,0,0,0.9), 0 0 60px rgba(0,0,0,0.6);
+  opacity: 0;
+  filter: blur(8px);
+  will-change: opacity, filter;
+  flex-shrink: 0;
+}
+.story-chunk-accent    { color: var(--primary); }
+.story-chunk-muted     { color: var(--text-muted); }
+.story-chunk-secondary { color: var(--secondary); }
+
+/* ── Scroll reveal ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(36px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms);
+}
+.reveal-in {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* Footer — minimal, one line */

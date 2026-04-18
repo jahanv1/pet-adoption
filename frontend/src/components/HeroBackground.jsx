@@ -6,7 +6,7 @@ const THEME_COLORS = {
   starry:   { particle: 0xE8C547, grid: 0x4A90C4, hex: '#E8C547', star: 0xC8D4FF },
   dark:     { particle: 0xFF6B35, grid: 0xFF6B35, hex: '#FF6B35', star: 0xFFB899 },
   wild:     { particle: 0xE8792A, grid: 0x5A7A3A, hex: '#E8792A', star: 0xC8E8A0 },
-  dusk:     { particle: 0x7D4E6A, grid: 0x4A3650, hex: '#7D4E6A', star: 0xD4AECE },
+  dusk:     { particle: 0x7D4E6A, grid: 0x4A3650, hex: '#7D4E6A', star: 0x5C2E4E },
   bold:     { particle: 0xFF2233, grid: 0x0A2280, hex: '#FF2233', star: 0xAABBFF },
   forest:   { particle: 0x2D6A4F, grid: 0x52B788, hex: '#2D6A4F', star: 0x90E8BC },
   heritage: { particle: 0xF7F5D0, grid: 0xF7F5D0, hex: '#F7F5D0', star: 0xFFE88A },
@@ -153,23 +153,12 @@ export default function HeroBackground() {
     const cursorWorld = new THREE.Vector3()
 
     const onMouseMove = (e) => {
-      // Convert mouse to NDC
       const rect = canvas.getBoundingClientRect()
       const ndcX =  ((e.clientX - rect.left) / rect.width)  * 2 - 1
       const ndcY = -((e.clientY - rect.top)  / rect.height) * 2 + 1
       raycaster.setFromCamera({ x: ndcX, y: ndcY }, camera)
       raycaster.ray.intersectPlane(cursorPlane, cursorWorld)
       mouseRef.current.set(cursorWorld.x, cursorWorld.y)
-
-      // Also trigger paw scatter
-      if (mode === 'scroll-out') return
-      const halfW = window.innerWidth * 0.5
-      const halfH = window.innerHeight * 0.5
-      const screenX = halfW + (0.4 / 8) * halfW * 1.2
-      const dist = Math.hypot(e.clientX - screenX, e.clientY - halfH)
-      const wasHovering = isHovering
-      isHovering = dist < 180
-      if (isHovering && !wasHovering) triggerHoverScatter()
     }
     window.addEventListener('mousemove', onMouseMove)
 
@@ -238,35 +227,13 @@ export default function HeroBackground() {
     })
     pawGroup.add(new THREE.Points(pawGeo, pawMat))
 
-    // ── Paw scatter state ──
+    // ── Paw state ──
     let mode = 'idle'
-    let hoverReturnTimer = null
-    let isHovering = false
-    const DAMP        = 0.94   // gentle deceleration — particles coast further
-    const RETURN_LERP = 0.0001  // very slow reform
-
-    const triggerHoverScatter = () => {
-      if (mode === 'scroll-out') return
-      mode = 'hover-out'
-      if (hoverReturnTimer) { clearTimeout(hoverReturnTimer); hoverReturnTimer = null }
-      for (let i = 0; i < N; i++) {
-        velX[i] = dirX[i] * 3.5 * (0.7 + Math.random() * 0.6)
-        velY[i] = dirY[i] * 3.5 * (0.7 + Math.random() * 0.6)
-        velZ[i] = dirZ[i] * 3.5 * (0.7 + Math.random() * 0.6)
-      }
-      // Wait 1s then drift back in slow motion
-      hoverReturnTimer = setTimeout(() => {
-        if (mode === 'hover-out') {
-          mode = 'hover-return'
-          for (let i = 0; i < N; i++) { velX[i] = 0; velY[i] = 0; velZ[i] = 0 }
-        }
-        hoverReturnTimer = null
-      }, 1000)
-    }
+    const PAW_ATTRACT_RADIUS = 2.5   // world units (local paw space)
+    const PAW_ATTRACT_FORCE  = 0.65  // max pull distance
 
     // ── Animation ──
     let frameId, t = 0
-    let yRot = 0
     const STAR_PUSH_RADIUS = 2.2   // world units
     const STAR_PUSH_FORCE  = 1.8   // how far they drift
     const STAR_LERP        = 0.04
@@ -280,24 +247,16 @@ export default function HeroBackground() {
 
       // ── Paw scatter transitions ──
       if (prog > 0.01) {
-        if (mode !== 'scroll-out') {
-          mode = 'scroll-out'
-          if (hoverReturnTimer) { clearTimeout(hoverReturnTimer); hoverReturnTimer = null }
-        }
+        if (mode !== 'scroll-out') mode = 'scroll-out'
       } else if (prog <= 0.01 && mode === 'scroll-out') {
-        mode = 'hover-return'
-        for (let i = 0; i < N; i++) { velX[i] = 0; velY[i] = 0; velZ[i] = 0 }
+        mode = 'idle'
       }
 
       // ── Paw particles ──
       // Keep rotating in all modes — speed up slightly during scatter for drama
-      const rotSpeed = 0.0001
-      yRot += rotSpeed
-      pawGroup.rotation.y = yRot
+      pawGroup.rotation.y = 0
       // Gentle z tilt during dispersion only
-      pawGroup.rotation.z = (mode === 'hover-out' || mode === 'scroll-out')
-        ? Math.sin(t * 0.1) * 0.02
-        : 0
+      pawGroup.rotation.z = mode === 'scroll-out' ? Math.sin(t * 0.1) * 0.02 : 0
       pawGroup.position.y = Math.sin(t * 0.25) * 0.15
 
       const posAttr = pawGeo.attributes.position
@@ -307,24 +266,27 @@ export default function HeroBackground() {
           liveX[i] = homeX[i] + (scatterX[i] - homeX[i]) * prog
           liveY[i] = homeY[i] + (scatterY[i] - homeY[i]) * prog
           liveZ[i] = (scatterZ[i]) * prog
-        } else if (mode === 'hover-out') {
-          liveX[i] += velX[i] * 0.016
-          liveY[i] += velY[i] * 0.016
-          liveZ[i] += velZ[i] * 0.016
-          velX[i] *= DAMP; velY[i] *= DAMP; velZ[i] *= DAMP
-        } else if (mode === 'hover-return') {
-          // Slow reform — each particle has a slight staggered delay via phase
-          const k = RETURN_LERP * (0.7 + Math.sin(phase[i]) * 0.3)
-          liveX[i] += (homeX[i] - liveX[i]) * k
-          liveY[i] += (homeY[i] + Math.sin(t + phase[i]) * 0.03 - liveY[i]) * k
-          liveZ[i] += (0 - liveZ[i]) * k
-          if (i === 0) {
-            const dx = liveX[0] - homeX[0], dy = liveY[0] - homeY[0]
-            if (dx*dx + dy*dy < 0.00001) mode = 'idle'
-          }
         } else {
-          liveX[i] += (homeX[i] - liveX[i]) * 0.05
-          liveY[i] += (homeY[i] + Math.sin(t + phase[i]) * 0.03 - liveY[i]) * 0.05
+          // Idle — continuous organic wiggle + cursor attraction
+          const wiggleX = Math.sin(t * 0.9 + phase[i])         * 0.10
+                        + Math.cos(t * 0.5 + phase[i] * 1.7)   * 0.05
+          const wiggleY = Math.sin(t * 0.7 + phase[i] * 1.3)   * 0.10
+                        + Math.cos(t * 0.4 + phase[i] * 0.8)   * 0.05
+
+          const localMX = (mouseRef.current.x - pawGroup.position.x) / PAW_SCALE
+          const localMY = (mouseRef.current.y - pawGroup.position.y) / PAW_SCALE
+          const cx = localMX - homeX[i]
+          const cy = localMY - homeY[i]
+          const cd = Math.sqrt(cx * cx + cy * cy) + 0.001
+          let tx = homeX[i] + wiggleX
+          let ty = homeY[i] + wiggleY
+          if (cd < PAW_ATTRACT_RADIUS) {
+            const pull = (1 - cd / PAW_ATTRACT_RADIUS) * PAW_ATTRACT_FORCE
+            tx += (cx / cd) * pull
+            ty += (cy / cd) * pull
+          }
+          liveX[i] += (tx - liveX[i]) * 0.05
+          liveY[i] += (ty - liveY[i]) * 0.05
           liveZ[i] += (0 - liveZ[i]) * 0.05
         }
         posAttr.setXYZ(i, liveX[i], liveY[i], liveZ[i])
@@ -378,7 +340,6 @@ export default function HeroBackground() {
 
     return () => {
       cancelAnimationFrame(frameId)
-      if (hoverReturnTimer) clearTimeout(hoverReturnTimer)
       window.removeEventListener('mousemove', onMouseMove)
       window.removeEventListener('resize', onResize)
       starSprites.forEach(s => { scene.remove(s.sprite); s.mat.dispose() })
