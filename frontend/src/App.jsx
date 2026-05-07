@@ -4,6 +4,7 @@ import ShelterLogin from './pages/ShelterLogin'
 import AdopterLogin from './pages/AdopterLogin'
 import ShelterDashboard from './pages/ShelterDashboard'
 import AdopterDashboard from './pages/AdopterDashboard'
+import MyAdoptions from './pages/MyAdoptions'
 import ProtectedRoute from './components/ProtectedRoute'
 
 export default function App() {
@@ -25,6 +26,14 @@ export default function App() {
         element={
           <ProtectedRoute userType="adopter">
             <AdopterDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/adopter/adoptions"
+        element={
+          <ProtectedRoute userType="adopter">
+            <MyAdoptions />
           </ProtectedRoute>
         }
       />

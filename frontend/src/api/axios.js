@@ -1,7 +1,12 @@
 import axios from 'axios'
 
+const isLocal = typeof window !== 'undefined' && window.location.hostname === 'localhost'
+const BASE_URL = isLocal
+  ? 'http://localhost:8000'
+  : 'https://pawshome-backend-tjxq.onrender.com'
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
+  baseURL: BASE_URL,
   headers: { 'Content-Type': 'application/json' },
 })
 

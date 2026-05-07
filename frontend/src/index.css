@@ -3,10 +3,7 @@
    Headings : Bebas Neue  |  Body : Nunito
 ══════════════════════════════════════════════════════ */
 
-/* ── Custom paw cursor — inky stamp ── */
-*, *::before, *::after {
-  cursor: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB3aWR0aD0iMzIiIGhlaWdodD0iMzIiPjxkZWZzPjxmaWx0ZXIgaWQ9ImJsdXIiPjxmZVR1cmJ1bGVuY2UgdHlwZT0iZnJhY3RhbE5vaXNlIiBiYXNlRnJlcXVlbmN5PSIwLjY1IiBudW1PY3RhdmVzPSIzIiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlRGlzcGxhY2VtZW50TWFwIGluPSJTb3VyY2VHcmFwaGljIiBzY2FsZT0iMyIvPjwvZmlsdGVyPjwvZGVmcz48ZWxsaXBzZSBjeD0iNTAiIGN5PSI2NSIgcng9IjIyIiByeT0iMjAiIGZpbGw9IiMxMTEiIG9wYWNpdHk9IjAuOSIgZmlsdGVyPSJ1cmwoI2JsdXIpIi8+PGVsbGlwc2UgY3g9IjMyIiBjeT0iMzgiIHJ4PSI5IiByeT0iMTEiIGZpbGw9IiMxMTEiIG9wYWNpdHk9IjAuODUiIHRyYW5zZm9ybT0icm90YXRlKC0xNSAzMiAzOCkiIGZpbHRlcj0idXJsKCNibHVyKSIvPjxlbGxpcHNlIGN4PSI0NCIgY3k9IjMwIiByeD0iOCIgcnk9IjExIiBmaWxsPSIjMTExIiBvcGFjaXR5PSIwLjg1IiB0cmFuc2Zvcm09InJvdGF0ZSgtNSA0NCAzMCkiIGZpbHRlcj0idXJsKCNibHVyKSIvPjxlbGxpcHNlIGN4PSI1NyIgY3k9IjMwIiByeD0iOCIgcnk9IjExIiBmaWxsPSIjMTExIiBvcGFjaXR5PSIwLjg1IiB0cmFuc2Zvcm09InJvdGF0ZSg1IDU3IDMwKSIgZmlsdGVyPSJ1cmwoI2JsdXIpIi8+PGVsbGlwc2UgY3g9IjY5IiBjeT0iMzgiIHJ4PSI5IiByeT0iMTEiIGZpbGw9IiMxMTEiIG9wYWNpdHk9IjAuODUiIHRyYW5zZm9ybT0icm90YXRlKDE1IDY5IDM4KSIgZmlsdGVyPSJ1cmwoI2JsdXIpIi8+PC9zdmc+") 8 8, auto !important;
-}
+/* ── Custom paw cursor — injected per-theme by ThemeContext ── */
 
 /* ── CSS Variables — DARK theme (original, default) ── */
 [data-theme="dark"] {
@@ -1404,6 +1401,8 @@ body:has(.landing-dark) {
 }
 .sd-health-input::placeholder { color: var(--text-ghost); font-size: 1rem; }
 .sd-health-input[type="date"] { font-family: 'Nunito', sans-serif; font-size: 0.9rem; font-weight: 600; }
+.sd-health-select { appearance: none; cursor: pointer; font-size: 1rem; padding-right: 20px; }
+.sd-health-select option { background: var(--bg-card); color: var(--text); font-family: 'Nunito', sans-serif; font-size: 0.9rem; }
 
 /* ── Vaccination edit row ── */
 .sd-vacc-edit-row { grid-template-columns: 1fr 1fr 1fr 32px; }
@@ -1436,6 +1435,232 @@ body:has(.landing-dark) {
 /* ── Card clickable ── */
 .sd-card-clickable { cursor: pointer; }
 
+/* ── Staff section ── */
+.sd-staff-form {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 28px 32px;
+  margin-bottom: 32px;
+}
+.sd-staff-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  margin-top: 8px;
+}
+.sd-staff-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 20px 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  transition: border-color 0.2s;
+}
+.sd-staff-card:hover { border-color: var(--border-bright); }
+
+/* top row: avatar + info side by side */
+.sd-card-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  width: 100%;
+}
+
+.sd-staff-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.sd-staff-info { flex: 1; min-width: 0; }
+.sd-staff-name {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1.2rem;
+  letter-spacing: 0.04em;
+  color: var(--text);
+  line-height: 1.15;
+  margin-bottom: 3px;
+  word-break: break-word;
+}
+.sd-staff-role {
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--primary);
+  margin-bottom: 10px;
+  word-break: break-word;
+}
+.sd-staff-meta {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  word-break: break-all;
+}
+.sd-meta-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* bottom button row */
+.sd-card-btn-row {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-subtle);
+  width: 100%;
+}
+
+.sd-staff-del {
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.45);
+  color: #f87171;
+  font-family: 'Bebas Neue', cursive;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  padding: 5px 14px;
+  border-radius: var(--radius-xs);
+  transition: background 0.15s, border-color 0.15s;
+  cursor: pointer;
+}
+.sd-staff-del:hover:not(:disabled) {
+  background: rgba(248, 113, 113, 0.22);
+  border-color: #f87171;
+}
+.sd-staff-del:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.sd-staff-edit-btn {
+  background: rgba(var(--primary-rgb, 255, 107, 53), 0.1);
+  border: 1px solid rgba(var(--primary-rgb, 255, 107, 53), 0.4);
+  color: var(--primary);
+  font-family: 'Bebas Neue', cursive;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  padding: 5px 14px;
+  border-radius: var(--radius-xs);
+  transition: background 0.15s, border-color 0.15s;
+  cursor: pointer;
+}
+.sd-staff-edit-btn:hover {
+  background: rgba(var(--primary-rgb, 255, 107, 53), 0.22);
+  border-color: var(--primary);
+}
+
+.sd-staff-card--editing { border-color: var(--primary); }
+.sd-staff-edit-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.sd-staff-edit-input {
+  width: 100%;
+  background: var(--surface-2, rgba(255,255,255,0.04));
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 0.82rem;
+  padding: 5px 10px;
+  border-radius: var(--radius-xs);
+  outline: none;
+  font-family: inherit;
+}
+.sd-staff-edit-input:focus { border-color: var(--primary); }
+.sd-staff-edit-err {
+  color: #f87171;
+  font-size: 0.72rem;
+  margin-top: 2px;
+}
+.sd-staff-edit-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+.sd-staff-save {
+  background: var(--primary);
+  color: #000;
+  border: none;
+  font-family: 'Bebas Neue', cursive;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  padding: 4px 14px;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+}
+.sd-staff-cancel {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-family: 'Bebas Neue', cursive;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  padding: 4px 14px;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+}
+.sd-staff-cancel:hover { border-color: var(--text-dim); color: var(--text); }
+
+/* ── Section colour themes ── */
+.sd-section-title--staff { color: var(--primary); border-bottom-color: rgba(var(--primary-rgb,255,107,53),0.45); }
+.sd-section-title--vet   { color: #4A90D9;        border-bottom-color: rgba(74,144,217,0.45); }
+.sd-section-title--foster{ color: #52B788;        border-bottom-color: rgba(82,183,136,0.45); }
+.sd-section-title--donor { color: #9B59B6;        border-bottom-color: rgba(155,89,182,0.45); }
+
+/* ── Vet cards ── */
+.sd-vet-card   { border-color: rgba(74,144,217,0.3); }
+.sd-vet-avatar { background: #4A90D9; color: #fff; }
+.sd-vet-role   { color: #4A90D9; }
+.sd-vet-card .sd-staff-edit-btn  { background: rgba(74,144,217,0.1);  border-color: rgba(74,144,217,0.45);  color: #4A90D9; }
+.sd-vet-card .sd-staff-edit-btn:hover { background: rgba(74,144,217,0.22); border-color: #4A90D9; }
+.sd-vet-card.sd-staff-card--editing   { border-color: #4A90D9; }
+
+/* ── Foster cards ── */
+.sd-foster-card   { border-color: rgba(82,183,136,0.3); }
+.sd-foster-avatar { background: #52B788; color: #fff; }
+.sd-foster-role   { color: #52B788; }
+.sd-foster-card .sd-staff-edit-btn  { background: rgba(82,183,136,0.1);  border-color: rgba(82,183,136,0.45);  color: #52B788; }
+.sd-foster-card .sd-staff-edit-btn:hover { background: rgba(82,183,136,0.22); border-color: #52B788; }
+.sd-foster-card.sd-staff-card--editing   { border-color: #52B788; }
+.sd-foster-card .sd-card-btn-row { border-top-color: rgba(82,183,136,0.2); }
+
+/* ── Donor cards ── */
+.sd-donor-card   { border-color: rgba(155,89,182,0.3); }
+.sd-donor-avatar { background: #9B59B6; color: #fff; }
+.sd-donor-amount {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1.5rem;
+  letter-spacing: 0.04em;
+  color: #9B59B6;
+  margin-top: 4px;
+  line-height: 1;
+}
+.sd-donor-card .sd-staff-role  { color: #9B59B6; }
+.sd-donor-card .sd-staff-edit-btn  { background: rgba(155,89,182,0.1);  border-color: rgba(155,89,182,0.45);  color: #9B59B6; }
+.sd-donor-card .sd-staff-edit-btn:hover { background: rgba(155,89,182,0.22); border-color: #9B59B6; }
+.sd-donor-card.sd-staff-card--editing   { border-color: #9B59B6; }
+.sd-donor-card .sd-card-btn-row { border-top-color: rgba(155,89,182,0.2); }
+
 /* ── Add Animal button ── */
 .sd-add-btn {
   margin-left: auto;
@@ -1451,6 +1676,76 @@ body:has(.landing-dark) {
   flex-shrink: 0;
 }
 .sd-add-btn:hover { background: #FFD700; color: #000; }
+
+/* REMOVE mode button (sits between count and + ADD) */
+/* Button group wrapper in section headers */
+.sd-section-btns {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.sd-remove-btn {
+  background: none;
+  border: 1px solid rgba(248,113,113,0.5);
+  color: #f87171;
+  font-family: 'Bebas Neue', cursive;
+  font-size: 0.85rem;
+  letter-spacing: 0.14em;
+  padding: 6px 18px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+.sd-remove-btn:hover { background: rgba(248,113,113,0.12); border-color: #f87171; }
+
+/* Bulk delete confirm button (shown when in select mode) */
+.sd-bulk-delete-btn {
+  background: #f87171;
+  color: #000;
+  border: none;
+  font-family: 'Bebas Neue', cursive;
+  font-size: 0.85rem;
+  letter-spacing: 0.14em;
+  padding: 6px 18px;
+  cursor: pointer;
+  border-radius: var(--radius-xs);
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+.sd-bulk-delete-btn:hover:not(:disabled) { background: #ef4444; }
+.sd-bulk-delete-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* Cancel select mode — inherits .sd-add-btn but no margin-left:auto */
+.sd-cancel-select-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-family: 'Bebas Neue', cursive;
+  font-size: 0.85rem;
+  letter-spacing: 0.14em;
+  padding: 6px 18px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+.sd-cancel-select-btn:hover { border-color: var(--text-muted); color: var(--text); }
+
+/* Card checkbox in select mode */
+.sd-card-checkbox {
+  width: 17px;
+  height: 17px;
+  accent-color: #f87171;
+  flex-shrink: 0;
+  margin-top: 15px;
+  cursor: pointer;
+}
+.sd-staff-card--selected {
+  border-color: rgba(248,113,113,0.6);
+  background: rgba(248,113,113,0.04);
+}
 
 /* ── Add Animal modal ── */
 .sd-add-modal { max-width: 720px; }
@@ -1504,7 +1799,8 @@ body:has(.landing-dark) {
 .sd-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(0, 0, 0, 0.97);
+  backdrop-filter: blur(4px);
   z-index: 5000;
   display: flex;
   align-items: center;
@@ -1634,6 +1930,101 @@ body:has(.landing-dark) {
   object-position: center 30%;
   display: block;
 }
+/* ── Person detail modal (staff / vet / foster) ── */
+.sd-person-modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  width: 460px;
+  max-width: 94vw;
+  max-height: 88vh;
+  overflow-y: auto;
+  animation: modal-in 0.18s ease;
+}
+.sd-person-banner {
+  position: relative;
+  padding: 32px 28px 28px;
+}
+.sd-person-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 1rem;
+  cursor: pointer;
+  line-height: 1;
+  transition: color 0.15s;
+}
+.sd-person-close:hover { color: var(--text); }
+.sd-person-banner-inner {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+.sd-person-big-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bebas Neue', cursive;
+  font-size: 2.2rem;
+  color: #fff;
+  flex-shrink: 0;
+}
+.sd-person-banner-text { display: flex; flex-direction: column; gap: 6px; }
+.sd-person-badge {
+  display: inline-block;
+  font-family: 'Bebas Neue', cursive;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  padding: 3px 10px;
+  border-radius: 2px;
+  width: fit-content;
+}
+.sd-person-name {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1.9rem;
+  letter-spacing: 0.04em;
+  color: var(--text);
+  line-height: 1;
+  margin: 0;
+}
+.sd-person-role {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 0.85rem;
+  letter-spacing: 0.14em;
+}
+.sd-person-info {
+  padding: 20px 28px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.sd-person-info-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border-left: 3px solid;
+  padding: 10px 14px;
+  background: var(--bg-elevated);
+  border-radius: 0 var(--radius-xs) var(--radius-xs) 0;
+}
+.sd-person-info-label {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  color: var(--text-ghost);
+}
+.sd-person-info-val {
+  font-size: 0.95rem;
+  color: var(--text);
+  word-break: break-all;
+}
+
 .sd-modal-photo-change {
   position: absolute;
   bottom: 0;
@@ -1823,6 +2214,8 @@ body:has(.landing-dark) {
 .stat-card.avail  { border-color: rgba(255,107,53,0.25); }
 .stat-card.total  { border-color: var(--border); }
 .stat-card.foster { border-color: var(--border); }
+.stat-card--active { border-color: var(--primary) !important; background: rgba(255,107,53,0.08); }
+.stat-card--active .stat-label { color: var(--primary); }
 
 /* Legacy headings used by ShelterDashboard */
 .section-title {
@@ -2571,4 +2964,645 @@ body:has(.landing-dark) {
 /* Restore wrapper animation during burst */
 .hero-paw-burst {
   animation-play-state: paused;
+}
+
+/* ══════════════════════════════════════════════════════
+   FEATURE 1-5 — Adoption, Favourites, Health (Adopter)
+══════════════════════════════════════════════════════ */
+
+/* ── Favourite heart button ── */
+.ad-fav-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0,0,0,0.55);
+  border: 1px solid var(--border-bright);
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: color 0.15s, background 0.15s, transform 0.12s;
+  z-index: 5;
+  line-height: 1;
+}
+.ad-fav-btn:hover { background: rgba(0,0,0,0.75); transform: scale(1.15); }
+.ad-fav-btn--active { color: var(--primary); border-color: var(--primary); }
+
+/* ── Adoption request form in modal ── */
+.ad-request-form { display: flex; flex-direction: column; gap: 6px; }
+.ad-request-textarea {
+  width: 100%;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-xs);
+  color: var(--text);
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.9rem;
+  padding: 10px 14px;
+  resize: vertical;
+  min-height: 90px;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+.ad-request-textarea:focus { outline: none; border-color: var(--primary); }
+.ad-request-textarea::placeholder { color: var(--text-placeholder); }
+
+/* ── My Adoptions list ── */
+.ad-adoptions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px 48px;
+}
+.ad-adoption-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ad-adoption-animal {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1.4rem;
+  letter-spacing: 0.06em;
+  color: var(--text);
+}
+.ad-adoption-meta {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+.ad-adoption-approved {
+  color: #4ade80;
+  font-family: 'Bebas Neue', cursive;
+  letter-spacing: 0.1em;
+  font-size: 0.8rem;
+}
+
+/* ── Adoption status badge (dynamic) ── */
+.ad-adoption-status {
+  font-family: 'Bebas Neue', cursive;
+  letter-spacing: 0.1em;
+  font-size: 0.8rem;
+}
+.ad-adoption-status--pending  { color: var(--primary); }
+.ad-adoption-status--approved { color: #52B788; }
+.ad-adoption-status--rejected { color: #E07070; }
+
+/* ── My Adoptions stat summary ── */
+.ad-adoption-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  margin: 32px 48px 0;
+  border: 1px solid var(--border);
+}
+.ad-adopt-stat {
+  border: none !important;
+  border-radius: 0 !important;
+}
+
+/* ── Adoption Status grid ── */
+.ad-status-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+  padding: 32px 48px;
+}
+.ad-status-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.2s;
+}
+.ad-status-card:hover { border-color: var(--primary); }
+.ad-status-card-img {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: var(--bg-elevated);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.ad-status-card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.ad-status-card-emoji { font-size: 4rem; line-height: 1; }
+.ad-status-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-family: 'Bebas Neue', cursive;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  color: #0a0a0a;
+  padding: 3px 10px;
+  border-radius: 2px;
+}
+.ad-status-card-body {
+  padding: 16px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+.ad-status-card-name {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1.5rem;
+  letter-spacing: 0.05em;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+.ad-status-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.ad-status-sep { color: var(--border); margin: 0 2px; }
+.ad-status-card-date {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.ad-status-card-msg { display: flex; flex-direction: column; gap: 4px; margin-top: 4px; }
+.ad-status-card-msg p { margin: 0; font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5; }
+.ad-status-health-btn {
+  margin-top: 8px;
+  background: transparent;
+  border: 1px solid #52B788;
+  color: #52B788;
+  font-family: 'Bebas Neue', cursive;
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+  padding: 8px 14px;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  align-self: flex-start;
+}
+.ad-status-health-btn:hover { background: #52B788; color: #0a0a0a; }
+.ad-health-modal { max-width: 520px; }
+
+/* ── MyAdoptions page header ── */
+.ma-header {
+  position: relative;
+  overflow: hidden;
+  padding: 48px 48px 40px;
+  border-bottom: 1px solid var(--border);
+}
+.ma-back-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: 'Bebas Neue', cursive;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 16px;
+  display: block;
+  transition: color 0.2s;
+}
+.ma-back-btn:hover { color: var(--primary); }
+.ma-header-inner { position: relative; z-index: 1; }
+
+/* ── MyAdoptions health modal ── */
+.ma-health-modal { max-width: 560px; }
+
+.ma-visit-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xs);
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+.ma-visit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid var(--border);
+  gap: 16px;
+}
+.ma-visit-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.ma-visit-date {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1.3rem;
+  letter-spacing: 0.05em;
+  color: var(--text-primary);
+}
+.ma-visit-vet { text-align: right; }
+.ma-visit-vet-name {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1.1rem;
+  letter-spacing: 0.05em;
+  color: var(--primary);
+}
+.ma-visit-vitals {
+  display: flex;
+  align-items: center;
+  padding: 14px 20px;
+  gap: 0;
+}
+.ma-vital {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 16px;
+}
+.ma-vital:first-child { padding-left: 0; }
+.ma-vital-divider {
+  width: 1px;
+  height: 36px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+.ma-vital-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+.ma-vital-val {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1.4rem;
+  letter-spacing: 0.03em;
+  color: var(--text-primary);
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+.ma-vital-unit { font-size: 0.75rem; color: var(--text-muted); }
+
+.ma-section-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+/* Vaccination timeline */
+.ma-vacc-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xs);
+  overflow: hidden;
+}
+.ma-vacc-entry {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-elevated);
+}
+.ma-vacc-entry:last-child { border-bottom: none; }
+.ma-vacc-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-top: 5px;
+  flex-shrink: 0;
+}
+.ma-vacc-content { display: flex; flex-direction: column; gap: 4px; }
+.ma-vacc-name {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+  color: var(--text-primary);
+}
+.ma-vacc-dates {
+  display: flex;
+  gap: 16px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+}
+.ma-vacc-dates strong { color: var(--text-secondary); }
+.ma-overdue-tag {
+  display: inline-block;
+  margin-left: 6px;
+  background: rgba(224, 112, 112, 0.15);
+  color: #E07070;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  padding: 1px 5px;
+  border-radius: 2px;
+}
+
+/* ── Health panel inside modal ── */
+.ad-health-panel {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xs);
+  padding: 16px 20px;
+  margin-top: 8px;
+}
+.ad-health-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.ad-health-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.ad-health-val {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1.2rem;
+  color: var(--text);
+  letter-spacing: 0.04em;
+}
+
+/* ── Login History table ── */
+.lh-table-wrap {
+  margin: 0 48px 48px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  overflow-x: auto;
+}
+.lh-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+.lh-table thead tr {
+  border-bottom: 1px solid var(--border);
+}
+.lh-table th {
+  text-align: left;
+  padding: 10px 16px;
+  font-family: 'Bebas Neue', cursive;
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+.lh-table td {
+  padding: 10px 16px;
+  color: var(--text-muted);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  white-space: nowrap;
+}
+.lh-table tbody tr:last-child td { border-bottom: none; }
+.lh-table tbody tr:hover td { background: rgba(255,255,255,0.02); }
+.lh-badge {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  padding: 2px 8px;
+  border-radius: 2px;
+}
+.lh-badge--shelter { background: rgba(255,107,53,0.15); color: var(--primary); }
+.lh-badge--adopter { background: rgba(82,183,136,0.15); color: #52B788; }
+.lh-ip { font-family: 'Courier New', monospace; font-size: 0.76rem; color: var(--text-ghost); }
+
+/* ── Adoption Requests section (Shelter side) ── */
+.sd-adoption-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px 48px;
+}
+.sd-adoption-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--border-bright);
+  border-radius: var(--radius-sm);
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color 0.2s;
+}
+.sd-adoption-card--pending  { border-left-color: #FFD700; }
+.sd-adoption-card--approved { border-left-color: #4ade80; }
+.sd-adoption-card--rejected { border-left-color: var(--text-dim); opacity: 0.7; }
+.sd-adoption-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.sd-adoption-animal {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1.5rem;
+  letter-spacing: 0.06em;
+  color: var(--text);
+}
+.sd-adoption-badge {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  padding: 3px 10px;
+  border-radius: 2px;
+  border: 1px solid currentColor;
+}
+.sd-adoption-badge--pending  { color: #FFD700; }
+.sd-adoption-badge--approved { color: #4ade80; }
+.sd-adoption-badge--rejected { color: var(--text-muted); }
+.sd-adoption-meta {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+.sd-adoption-message { font-size: 0.85rem; color: var(--text-muted); }
+.sd-adoption-message p { margin: 4px 0 0; color: var(--text); }
+.sd-adoption-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+.sd-modal-bgcheck { color: var(--primary); border-color: var(--primary); }
+.sd-modal-bgcheck:hover:not(:disabled) { background: var(--primary); color: #000; }
+
+/* ── Adopter review view ── */
+.sd-review-topbar {
+  padding: 20px 48px 0;
+}
+.sd-review-back {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-family: 'Bebas Neue', cursive;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+}
+.sd-review-back:hover { color: var(--primary); }
+.sd-review-body {
+  padding: 32px 48px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.sd-review-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 20px 24px;
+}
+.sd-review-card-title {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+}
+.sd-review-field {
+  display: flex;
+  gap: 12px;
+  font-size: 0.88rem;
+  color: var(--text);
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+}
+.sd-review-field:last-child { border-bottom: none; }
+.sd-review-field .sd-meta-label { min-width: 72px; flex-shrink: 0; }
+.sd-review-message {
+  font-size: 0.88rem;
+  color: var(--text);
+  line-height: 1.6;
+  margin: 0;
+}
+.sd-review-bgcheck--cleared { border-left: 3px solid #4ade80; }
+.sd-review-bgcheck--flagged { border-left: 3px solid #f87171; }
+.sd-review-bgcheck--review  { border-left: 3px solid #FFD700; }
+.sd-review-empty {
+  font-size: 0.84rem;
+  color: var(--text-ghost);
+  margin: 0;
+}
+.sd-review-actions {
+  display: flex;
+  gap: 12px;
+  padding-top: 8px;
+}
+.sd-review-edit-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-family: 'Bebas Neue', cursive;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  padding: 2px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  margin-left: auto;
+  transition: color 0.2s, border-color 0.2s;
+}
+.sd-review-edit-btn:hover { color: var(--primary); border-color: var(--primary); }
+.sd-review-edit-form { display: flex; flex-direction: column; gap: 10px; }
+.sd-review-edit-row { display: flex; align-items: center; gap: 12px; }
+.sd-review-edit-row .sd-meta-label { min-width: 72px; flex-shrink: 0; }
+.sd-review-edit-row .sd-staff-edit-input { flex: 1; }
+.sd-review-textarea { width: 100%; resize: vertical; min-height: 80px; box-sizing: border-box; }
+
+/* ── Background check result panel ── */
+.sd-bgcheck {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.03);
+  font-size: 0.82rem;
+}
+.sd-bgcheck--cleared { border-left: 3px solid #4ade80; }
+.sd-bgcheck--flagged { border-left: 3px solid #f87171; }
+.sd-bgcheck--review  { border-left: 3px solid #FFD700; }
+.sd-bgcheck--error   { border-left: 3px solid var(--text-dim); }
+.sd-bgcheck-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+.sd-bgcheck-label {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+.sd-bgcheck-verdict {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  padding: 1px 7px;
+  border-radius: 3px;
+  border: 1px solid currentColor;
+}
+.sd-bgcheck-verdict--cleared { color: #4ade80; }
+.sd-bgcheck-verdict--flagged { color: #f87171; }
+.sd-bgcheck-verdict--review  { color: #FFD700; }
+.sd-bgcheck-verdict--error   { color: var(--text-dim); }
+.sd-bgcheck-conf {
+  font-size: 0.7rem;
+  color: var(--text-ghost);
+  font-family: 'Bebas Neue', cursive;
+  letter-spacing: 0.05em;
+}
+.sd-bgcheck-summary {
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0 0 8px;
+}
+.sd-bgcheck-flags {
+  margin: 0;
+  padding-left: 16px;
+  color: #f87171;
+  font-size: 0.78rem;
+  line-height: 1.6;
+}
+
+/* ── alert-success ── */
+.alert-success {
+  background: rgba(74,222,128,0.12);
+  border: 1px solid rgba(74,222,128,0.35);
+  color: #4ade80;
+  padding: 10px 16px;
+  border-radius: var(--radius-xs);
+  font-size: 0.85rem;
 }

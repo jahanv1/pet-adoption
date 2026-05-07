@@ -2,18 +2,18 @@ import { useNavigate } from 'react-router-dom'
 import { useEffect, useRef } from 'react'
 import HeroBackground from '../components/HeroBackground'
 
-const MARQUEE_TEXT = 'THEY WAITED · YOU SHOWED UP · THAT\'S HOW CHANGE HAPPENS · 2,400 LIVES SAVED · 1,800 HOME AND LOVED · BE THE REASON THEY WAG AGAIN · '
+const MARQUEE_TEXT = 'ADOPT · RESCUE · LOVE · REPEAT · FIND YOUR FOREVER · '
 
 const STORY_CHUNKS = [
-  { text: 'Every year,',                          cls: ''       },
-  { text: 'millions of animals',                  cls: 'accent' },
-  { text: 'wait in shelters —',                   cls: ''       },
-  { text: 'not because no one cares,',            cls: 'muted'  },
-  { text: "but because the right people",         cls: 'muted'  },
-  { text: "haven't found them yet.",              cls: 'muted'  },
-  { text: 'PawsHome changes that.',               cls: ''       },
-  { text: 'One platform. Every shelter.',         cls: 'secondary' },
-  { text: 'Your forever pet.',                    cls: 'secondary' },
+  { text: 'Some bonds',                   cls: ''          },
+  { text: 'can\'t be explained.',         cls: 'accent'    },
+  { text: 'Only felt.',                   cls: ''          },
+  { text: 'A paw on your knee',           cls: 'muted'     },
+  { text: 'when the world gets heavy.',   cls: 'muted'     },
+  { text: 'That\'s real.',               cls: 'muted'     },
+  { text: 'We help you find it.',         cls: ''          },
+  { text: 'Find your match.',             cls: 'secondary' },
+  { text: 'Love them forever.',           cls: 'secondary' },
 ]
 
 export default function Landing() {

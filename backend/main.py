@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 from database import db
-from routes import auth, animals, health, upload
+from routes import auth, animals, health, upload, staff, vet, donations, fosters, adoption, login_history
 from passlib.context import CryptContext
 
 # Force UTF-8 output so print() never crashes on Windows cp1252
@@ -154,8 +154,34 @@ async def seed_database():
         print("[OK] Seeded demo adopter  (demo@adopter.com / demo123)")
 
 
+def _create_mysql_tables():
+    db_type = os.getenv("DB_TYPE", "mongo")
+    if db_type != "mysql":
+        return
+    try:
+        from mysql_database import get_mysql_connection
+        conn = get_mysql_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS login_history (
+                log_id     INT AUTO_INCREMENT PRIMARY KEY,
+                user_type  VARCHAR(10),
+                user_id    INT,
+                email      VARCHAR(100),
+                login_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                ip_address VARCHAR(50)
+            )
+        """)
+        conn.commit()
+        cursor.close(); conn.close()
+        print("[OK] login_history table ready.")
+    except Exception as e:
+        print(f"[WARN] Could not create MySQL tables: {e}")
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    _create_mysql_tables()
     try:
         await seed_database()
     except Exception as e:
@@ -171,7 +197,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173", "http://127.0.0.1:5173",
                    "http://localhost:5174", "http://127.0.0.1:5174",
-                   "https://thepawshome.vercel.app"],
+                   "https://thepawshome.vercel.app","http://localhost:5175"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -181,6 +207,12 @@ app.include_router(auth.router, prefix="/auth", tags=["Auth"])
 app.include_router(animals.router, prefix="/animals", tags=["Animals"])
 app.include_router(health.router, prefix="/health", tags=["Health"])
 app.include_router(upload.router, prefix="/upload", tags=["Upload"])
+app.include_router(staff.router,  prefix="/staff",  tags=["Staff"])
+app.include_router(vet.router,       prefix="/vet",       tags=["Vet"])
+app.include_router(donations.router, prefix="/donations", tags=["Donations"])
+app.include_router(fosters.router,   prefix="/fosters",   tags=["Fosters"])
+app.include_router(adoption.router,  prefix="/adoption",  tags=["Adoption"])
+app.include_router(login_history.router, prefix="/login-history", tags=["LoginHistory"])
 
 UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "uploads")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
